@@ -15,8 +15,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+
     <!-- Styles -->
     @vite(['resources/css/site.css'])
+
 
     @stack('styles')
 </head>
@@ -54,11 +56,8 @@
     {{-- Footer --}}
     @include('components/layout.footer')
 
-
+  @vite(['resources/js/site.js'])
     <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
-
-        <!-- Styles -->
-    @vite(['resources/js/site.js'])
 </body>
 </html>

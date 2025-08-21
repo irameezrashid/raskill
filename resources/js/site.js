@@ -1,53 +1,62 @@
+document.addEventListener("DOMContentLoaded", () => {
+    // Sticky bar scroll
+    let prevScrollpos = window.pageYOffset;
+    const linksBar = document.getElementById("important-links");
 
-let prevScrollpos = window.pageYOffset;
-const linksBar = document.getElementById("important-links");
+    if (linksBar) {
+        window.addEventListener("scroll", () => {
+            let currentScrollPos = window.pageYOffset;
+            linksBar.style.top = (prevScrollpos > currentScrollPos) ? "0" : "-40px";
+            prevScrollpos = currentScrollPos;
+        });
+    }
 
-window.onscroll = function () {
-    let currentScrollPos = window.pageYOffset;
-    linksBar.style.top = (prevScrollpos > currentScrollPos) ? "0" : "-40px";
-    prevScrollpos = currentScrollPos;
-};
+    // Account dropdown
+    const accountBtn = document.getElementById('account-btn');
+    const accountDropdown = document.getElementById('account-dropdown');
 
-document.getElementById('account-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    document.getElementById('account-dropdown').classList.toggle('hidden');
-});
+    if (accountBtn && accountDropdown) {
+        accountBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            accountDropdown.classList.toggle('hidden');
+        });
 
-window.addEventListener('click', e => {
-    if (
-        !document.getElementById('account-btn').contains(e.target) &&
-        !document.getElementById('account-dropdown').contains(e.target)
-    ) {
-        document.getElementById('account-dropdown').classList.add('hidden');
+        window.addEventListener('click', e => {
+            if (!accountBtn.contains(e.target) && !accountDropdown.contains(e.target)) {
+                accountDropdown.classList.add('hidden');
+            }
+        });
+    }
+
+    // Sidebar active link tracking
+    const sections = document.querySelectorAll('main section');
+    const navLinks = document.querySelectorAll('aside a');
+
+    if (sections.length && navLinks.length) {
+        window.addEventListener('scroll', () => {
+            let closestSection = null;
+            let closestDistance = Number.POSITIVE_INFINITY;
+
+            sections.forEach(sec => {
+                const rect = sec.getBoundingClientRect();
+                const offset = 180;
+                if (rect.top - offset >= -100 && rect.top - offset < closestDistance) {
+                    closestDistance = rect.top - offset;
+                    closestSection = sec;
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active-link');
+                if (closestSection && link.getAttribute('href') === '#' + closestSection.id) {
+                    link.classList.add('active-link');
+                }
+            });
+        });
     }
 });
 
-// Sidebar active link tracking
-const sections = document.querySelectorAll('main section');
-const navLinks = document.querySelectorAll('aside a');
-
-window.addEventListener('scroll', () => {
-    let closestSection = null;
-    let closestDistance = Number.POSITIVE_INFINITY;
-
-    sections.forEach(sec => {
-        const rect = sec.getBoundingClientRect();
-        const offset = 180;
-        if (rect.top - offset >= -100 && rect.top - offset < closestDistance) {
-            closestDistance = rect.top - offset;
-            closestSection = sec;
-        }
-    });
-
-    navLinks.forEach(link => {
-        link.classList.remove('active-link');
-        if (closestSection && link.getAttribute('href') === '#' + closestSection.id) {
-            link.classList.add('active-link');
-        }
-    });
-});
-
-//Alpine store for menu state
+// Alpine store must load AFTER Alpine
 document.addEventListener('alpine:init', () => {
     Alpine.store('menu', {
         open: null,
@@ -77,4 +86,3 @@ document.addEventListener('alpine:init', () => {
         }
     });
 });
-
