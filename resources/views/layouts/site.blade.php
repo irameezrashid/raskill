@@ -49,15 +49,16 @@
     <div class="pt-36"></div>
 
     <!-- Main Content -->
-    <main class="flex-1 mt-[80px] md:mt-[125px] max-w-7xl mx-auto w-full px-4 space-y-12 py-8">
+    <main class="flex-1 mt-[80px] md:mt-[2px] max-w-7xl mx-auto w-full px-4 space-y-12 py-8">
         @yield('content')
     </main>
 
     {{-- Footer --}}
     @include('components/layout.footer')
 
-  @vite(['resources/js/site.js'])
+    @vite(['resources/js/site.js'])
     <!-- Alpine.js -->
     <script src="//unpkg.com/alpinejs" defer></script>
+    @stack('scripts')
 </body>
 </html>

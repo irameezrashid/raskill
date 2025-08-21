@@ -4,10 +4,12 @@
 
       <!-- left group -->
       <div class="flex items-center gap-2">
-        <a :class="$store.menu.isActive('/index.php') ? 'active-link rounded px-3 py-2 flex items-center gap-2' : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
-           href="index.php">
-           <i class="fa-solid fa-house w-4"></i><span class="text-sm">Home</span>
-        </a>
+        <a :class="$store.menu.isActive('{{ route('index') }}')
+        ? 'active-link rounded px-3 py-2 flex items-center gap-2'
+        : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
+   href="{{ route('index') }}">
+   <i class="fa-solid fa-house w-4"></i><span class="text-sm">Home</span>
+</a>
 
         <!-- Schemes dropdown -->
         <div class="relative" x-data>

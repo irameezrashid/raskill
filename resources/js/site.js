@@ -61,7 +61,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('menu', {
         open: null,
         sidebarOpen: false,
-        activePath: '',
+        activePath: window.location.pathname, // Laravel path
 
         toggle(name) {
             this.open = (this.open === name) ? null : name;
@@ -78,11 +78,10 @@ document.addEventListener('alpine:init', () => {
             if (!href) return false;
             try {
                 const u = new URL(href, location.origin);
-                href = u.pathname;
+                href = u.pathname; // normalize
             } catch (e) { }
 
-            if (!this.activePath) return false;
-            return this.activePath === href || this.activePath.endsWith(href);
+            return this.activePath === href || this.activePath.startsWith(href);
         }
     });
 });
