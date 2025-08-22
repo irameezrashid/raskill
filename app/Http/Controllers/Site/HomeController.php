@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Site;
+
+use App\Http\Controllers\Controller;   
 
 use Illuminate\Http\Request;
 
-class SiteController extends Controller
+class HomeController extends Controller
 {
     public function index(){
         return view('modules.site.index');

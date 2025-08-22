@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Site;
 
+use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class DirectoryController extends Controller
             return [
                 'id'          => $e->emp_id,
                 'name'        => $e->emp_name,
-                'designation' => $e->designation->desig_name ?? '',
+                'designation' => $e->designation->desig_name ?? 'NA',
                 'category'    => $e->category->name ?? 'NA',
                 'address'     => $e->district->name ?? 'NA',
                 'email'       => $e->emp_email,

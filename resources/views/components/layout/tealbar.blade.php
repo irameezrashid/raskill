@@ -98,10 +98,14 @@
           </div>
         </div>
 
-        <a :class="$store.menu.isActive('/grv.php') ? 'active-link rounded px-3 py-2 flex items-center gap-2' : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
-           href="grv.php">
-          <i class="fa-solid fa-message w-4"></i><span class="text-sm">Grievances</span>
-        </a>
+         {{-- Grievance link --}}
+<a :class="$store.menu.isActive('{{ route('site.grievance') }}')
+   ? 'active-link rounded px-3 py-2 flex items-center gap-2'
+   : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
+   href="{{ route('site.grievance') }}">
+   <i class="fa-solid fa-address-book w-4"></i><span class="text-sm">Grievances</span>
+</a>
+
 
         <!-- Others -->
         <div class="relative" x-data>
