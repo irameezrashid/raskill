@@ -4,10 +4,11 @@
 
       <!-- left group -->
       <div class="flex items-center gap-2">
-        <a :class="$store.menu.isActive('{{ route('index') }}')
-        ? 'active-link rounded px-3 py-2 flex items-center gap-2'
-        : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
-   href="{{ route('index') }}">
+        {{-- Home link --}}
+<a :class="$store.menu.isActive('{{ route('site.index') }}')
+   ? 'active-link rounded px-3 py-2 flex items-center gap-2'
+   : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
+   href="{{ route('site.index') }}">
    <i class="fa-solid fa-house w-4"></i><span class="text-sm">Home</span>
 </a>
 
@@ -54,10 +55,13 @@
           </div>
         </div>
 
-        <a :class="$store.menu.isActive('/directory.php') ? 'active-link rounded px-3 py-2 flex items-center gap-2' : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
-           href="directory.php">
-          <i class="fa-solid fa-phone w-4"></i><span class="text-sm">Contact</span>
-        </a>
+        {{-- Directory link --}}
+<a :class="$store.menu.isActive('{{ route('site.directory') }}')
+   ? 'active-link rounded px-3 py-2 flex items-center gap-2'
+   : 'px-3 py-2 flex items-center gap-2 hover:bg-teal-700 transition rounded'"
+   href="{{ route('site.directory') }}">
+   <i class="fa-solid fa-address-book w-4"></i><span class="text-sm">Directory</span>
+</a>
 
         <!-- Announcements -->
         <div class="relative" x-data>
