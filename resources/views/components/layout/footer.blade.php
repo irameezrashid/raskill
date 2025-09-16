@@ -41,14 +41,20 @@
   <p class="text-sm mt-3">
     <a href="tel:+911234567890" class="inline-flex items-center gap-2 text-teal-700 hover:text-teal-900">
       <i class="fas fa-phone-alt  pulse-icon text-teal-700" aria-hidden="true"></i>
-      <span>+91-1234567890</span>
+      <span>0194-2491613 (Srinagar Office)</span>
+    </a>
+  </p>
+  <p class="text-sm mt-3">
+    <a href="tel:+911234567890" class="inline-flex items-center gap-2 text-teal-700 hover:text-teal-900">
+      <i class="fas fa-phone-alt  pulse-icon text-teal-700" aria-hidden="true"></i>
+      <span>0191-2435190 (Jammu Office)</span>
     </a>
   </p>
 
-  <p class="text-sm">
+  <p class="text-sm mt-3">
     <a href="mailto:info@jkdte.in" class="inline-flex items-center gap-2 text-teal-700 hover:text-teal-900">
       <i class="fas fa-envelope text-teal-700  pulse-icon" aria-hidden="true"></i>
-      <span>info@jkdte.in</span>
+      <span>director-dtejammu@jk.gov.in</span>
     </a>
   </p>
 

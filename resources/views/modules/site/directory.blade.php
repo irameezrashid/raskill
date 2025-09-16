@@ -5,136 +5,217 @@
 
 <section
     class="bg-transparent rounded-2xl p-6 md:p-10 space-y-8"
-    id="notificationsSection"
-    x-data="contactsApp()"
+    id="directorySection"
+    x-data="directoryApp()"
 >
 
+  <!-- Header -->
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <h1 class="text-3xl font-bold flex items-center gap-2">
-      📇 Contact Directory
+      📇 Institute Directory
+      <span class="ml-2 text-sm font-semibold bg-teal-100 text-teal-700 px-2 py-0.5 rounded-full"
+        x-text="institutes.length"></span>
     </h1>
-    <button @click="exportToExcel" class="bg-teal-50 border border-teal-500 hover:bg-teal-50 text-teal-700 font-semibold px-4 py-2 rounded-md flex items-center gap-2">
-      <i class="fas fa-file-excel text-teal-600 text-lg"></i>
+    <button @click="exportToExcel"
+      class="bg-green-50 border border-green-300 hover:bg-green-100 text-green-700 font-semibold px-4 py-2 rounded-md flex items-center gap-2">
+      <i class="fas fa-file-excel text-green-600 text-lg"></i>
       Export to Excel
     </button>
   </div>
 
-  <!-- Search + Category Filters -->
+  <!-- Search + Category Tags -->
   <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-    <!-- Search -->
-    <input type="text" x-model.debounce.500ms="search" placeholder="🔍 Search contacts..." class="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-md shadow-sm" />
+    <input type="text" x-model.debounce.500ms="search" placeholder="🔍 Search institutes..."
+      class="w-full sm:w-96 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400" />
 
-    <!-- Categories -->
     <div class="flex flex-wrap gap-2">
       <template x-for="cat in categories" :key="cat.name">
         <button
           @click="filterCategory(cat.name)"
-          :class="category === cat.name ? 'bg-teal-600 text-white ring-2 ring-teal-300 scale-105 animate-pulse' : 'bg-gray-100 text-gray-800'"
-          class="transition-all px-3 py-1 rounded-full text-sm font-medium shadow-sm hover:bg-teal-200"
+          :class="category === cat.name
+                   ? categoryColor(cat.name)+' text-white scale-105'
+                   : categoryColor(cat.name)+' '+categoryHoverColor(cat.name)+' text-gray-800'"
+          class="transition-all px-3 py-1 rounded-full text-sm font-medium shadow-sm"
         >
           <span x-text="cat.name"></span>
-          <span class="ml-1 text-xs font-semibold bg-white text-teal-700 px-1.5 py-0.5 rounded-full" x-text="getCount(cat.name)"></span>
+          <span class="ml-1 text-xs font-semibold bg-white text-teal-700 px-1.5 py-0.5 rounded-full"
+                x-text="getCount(cat.name)"></span>
         </button>
       </template>
     </div>
   </div>
 
-  <!-- Contact Cards -->
+  <!-- Institute Cards Grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <template x-for="(contact, index) in filteredContacts.slice(0, visibleCount)" :key="contact.id">
-      <div class="bg-gradient-to-br from-teal-50 to-white p-4 rounded-xl shadow hover:shadow-lg transition-all border border-teal-100">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-bold" x-text="contact.name"></h2>
-          <span class="text-sm px-2 py-0.5 bg-teal-100 text-blue-700 rounded-full" x-text="contact.category"></span>
+    <template x-for="inst in paginatedInstitutes" :key="inst.id">
+      <div
+        x-transition:enter="transition transform ease-out duration-500"
+        x-transition:enter-start="opacity-0 translate-y-6"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition duration-300"
+      >
+        <!-- Top Badge / Category -->
+        <div :class="categoryColor(inst.category)+' text-white px-3 py-1 text-xs font-semibold uppercase tracking-wide'">
+          <span x-text="inst.category"></span>
         </div>
-        <p class="text-sm text-gray-600" x-text="contact.designation"></p>
-        <p class="text-sm text-gray-600" x-text="contact.department"></p>
 
-        <!-- Expandable Details -->
-        <button @click="toggleDetails(index)" class="text-sm mt-2 text-teal-700 hover:underline">View Details...</button>
-        <div x-show="expandedIndex === index" x-transition class="mt-2 text-sm space-y-1 border-t pt-2 text-gray-700">
-          <p><strong>Email:</strong> <span x-text="contact.email"></span></p>
-          <p><strong>Mobile:</strong> <span x-text="contact.mobile"></span></p>
-          <p><strong>Address:</strong> <span x-text="contact.address"></span></p>
+        <!-- Card Content -->
+        <div class="p-4 space-y-2">
+          <h2 class="text-lg font-bold text-gray-800" x-text="inst.name"></h2>
+          <p class="text-sm text-gray-600">
+            <span class="font-medium" x-text="inst.hoi"></span>
+            <span class="text-gray-500"> — </span>
+            <span x-text="inst.designation"></span>
+          </p>
+          <p class="text-sm text-gray-600" x-text="inst.address"></p>
+          <p class="text-sm text-gray-600">
+            <strong>Mobile:</strong> <span x-text="inst.mobile"></span>
+          </p>
+          <p class="text-sm text-gray-600">
+            <strong>Email:</strong> <span x-text="inst.email"></span>
+          </p>
+          <p class="text-sm text-teal-600 font-medium hover:underline">
+            <a :href="inst.website" target="_blank" x-text="inst.website"></a>
+          </p>
         </div>
       </div>
     </template>
   </div>
 
-  <!-- Load More -->
-  <div class="mt-8 flex justify-center">
-    <button
-      x-show="visibleCount < filteredContacts.length"
-      @click="visibleCount += 6"
-      class="px-6 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700"
-    >
-      Load More
-    </button>
+  <!-- Infinite Scroll Loader -->
+  <div x-show="hasMore" class="flex justify-center mt-6">
+    <span class="px-6 py-2 bg-teal-100 text-teal-700 rounded-lg animate-pulse">
+      Loading more...
+    </span>
   </div>
+
+  <!-- End Message -->
+  <div x-show="!hasMore && filteredInstitutes.length > 0" class="flex justify-center mt-6">
+    <span class="px-6 py-2 bg-gray-200 text-gray-600 rounded-lg">
+      🎉 You’ve reached the end!
+    </span>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button
+    x-show="showTopButton"
+    @click="scrollTop()"
+    class="fixed bottom-6 right-6 p-3 bg-teal-600 text-white rounded-full shadow-lg hover:bg-teal-700 transition opacity-80 hover:opacity-100"
+  >
+    ↑ Top
+  </button>
+
 </section>
 
 @push('scripts')
-    <script>
+<script>
 document.addEventListener('alpine:init', () => {
-    Alpine.data('contactsApp', () => ({
-        search: '',
-        category: 'All',
-        visibleCount: 6,
-        expandedIndex: null,
+  Alpine.data('directoryApp', () => ({
+    search: '',
+    category: 'All',
+    visibleCount: 9,
+    step: 6,
+    showTopButton: false,
+    institutes: @json($institutes),
 
-        // Load live data from Blade
-        contacts: @json($employees),
+    init() {
+      window.addEventListener('scroll', () => {
+        // Infinite scroll
+        if (this.hasMore && (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200) {
+          this.loadMore();
+        }
+        // Show back to top button
+        this.showTopButton = window.scrollY > 300;
+      });
+    },
 
-        get categories() {
-            const all = [...new Set(this.contacts.map(c => c.category))];
-            return [{ name: 'All' }, ...all.map(cat => ({ name: cat }))];
-        },
+    scrollTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
 
-        filterCategory(cat) {
-            this.category = cat;
-            this.visibleCount = 6;
-        },
+    get categories() {
+      const all = [...new Set(this.institutes.map(i => i.category))];
+      return [{ name: 'All' }, ...all.map(c => ({ name: c }))];
+    },
 
-        getCount(cat) {
-            return cat === 'All'
-                ? this.contacts.length
-                : this.contacts.filter(c => c.category === cat).length;
-        },
+    filterCategory(cat) {
+      this.category = cat;
+      this.visibleCount = 9;
+    },
 
-        get filteredContacts() {
-            return this.contacts.filter(c => {
-                const matchesCategory = this.category === 'All' || c.category === this.category;
-                const searchStr = this.search.toLowerCase();
-                const matchesSearch = c.name.toLowerCase().includes(searchStr) || c.designation.toLowerCase().includes(searchStr) || c.address.toLowerCase().includes(searchStr);
-                return matchesCategory && matchesSearch;
-            });
-        },
+    getCount(cat) {
+      if (cat === 'All') return this.institutes.length;
+      return this.institutes.filter(i => i.category === cat).length;
+    },
 
-        toggleDetails(index) {
-            this.expandedIndex = this.expandedIndex === index ? null : index;
-        },
+    get filteredInstitutes() {
+      const searchStr = this.search.toLowerCase();
+      return this.institutes.filter(i => {
+        const matchesCategory = this.category === 'All' || i.category === this.category;
+        return matchesCategory &&
+          (i.name.toLowerCase().includes(searchStr) ||
+           i.hoi.toLowerCase().includes(searchStr) ||
+           i.designation.toLowerCase().includes(searchStr) ||
+           i.address.toLowerCase().includes(searchStr));
+      });
+    },
 
-        exportToExcel() {
-            const data = this.filteredContacts.map(c => ({
-                Name: c.name,
-                Designation: c.designation,
-                Department: c.department,
-                Category: c.category,
-                Email: c.email,
-                Mobile: c.mobile,
-                Address: c.address,
-            }));
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Contacts");
-            XLSX.writeFile(workbook, "filtered_contacts.xlsx");
-        },
-    }));
+    get paginatedInstitutes() {
+      return this.filteredInstitutes.slice(0, this.visibleCount);
+    },
+
+    get hasMore() {
+      return this.visibleCount < this.filteredInstitutes.length;
+    },
+
+    loadMore() {
+      if (this.hasMore) this.visibleCount += this.step;
+    },
+
+    exportToExcel() {
+      const data = this.filteredInstitutes.map(i => ({
+        Name: i.name,
+        HOI: i.hoi,
+        Designation: i.designation,
+        Category: i.category,
+        Email: i.email,
+        Mobile: i.mobile,
+        Address: i.address,
+        Website: i.website,
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Institutes");
+      XLSX.writeFile(workbook, "institutes_directory.xlsx");
+    },
+
+    // Base color per category (brighter pastels)
+categoryColor(cat) {
+  switch(cat.toLowerCase()) {
+    case 'iti': return 'bg-teal-300';
+    case 'polytechnic': return 'bg-indigo-300';
+    case 'directorate': return 'bg-amber-300';
+    default: return 'bg-gray-300';
+  }
+},
+
+// Hover color per category (slightly brighter)
+categoryHoverColor(cat) {
+  switch(cat.toLowerCase()) {
+    case 'iti': return 'hover:bg-teal-400';
+    case 'polytechnic': return 'hover:bg-indigo-400';
+    case 'directorate': return 'hover:bg-amber-400';
+    default: return 'hover:bg-gray-400';
+  }
+}
+
+
+  }));
 });
 </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 @endpush
 
 @endsection

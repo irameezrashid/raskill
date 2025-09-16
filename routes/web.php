@@ -35,19 +35,17 @@ Route::prefix('/')->name('site.')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::prefix('iti')->name('iti.')->group(function () {
+    // ---------------- Registration Routes ----------------
     Route::get('/registrations', [Iti\RegistrationController::class, 'index'])->name('registrations');
-     Route::get('/registrations/{trade}', [Iti\RegistrationController::class, 'show'])->name('registration.show');
-     Route::get('/registrations/{trade}/add', [Iti\RegistrationController::class, 'add'])->name('registration.add');
-     Route::post('/registrations/finalize/{type}', [RegistrationController::class, 'finalize'])->name('iti.registration.finalize');
+    Route::get('/registrations/{trade}', [Iti\RegistrationController::class, 'show'])->name('registration.show');
+    Route::get('/registrations/{trade}/add', [Iti\RegistrationController::class, 'add'])->name('registration.add');
+    Route::post('/registrations/finalize/{type}', [RegistrationController::class, 'finalize'])->name('iti.registration.finalize');
+
+    // ---------------- Seat Matrix Routes ----------------
+    Route::get('/seatmatrix', [Iti\SeatMatrixController::class, 'index'])->name('seatmatrix');
 
 
 });
-// Route::prefix('iti')->name('iti.')->group(function () {
-//     Route::get('/registrations', [App\Http\Controllers\ITI\RegistrationController::class, 'index'])->name('registration.index');
-//     Route::get('/registrations/{trade}', [App\Http\Controllers\ITI\RegistrationController::class, 'show'])->name('registration.show');
-//     Route::get('/registrations/{trade}/create', [App\Http\Controllers\ITI\RegistrationController::class, 'create'])->name('registration.create');
-// });
-
 
 
 

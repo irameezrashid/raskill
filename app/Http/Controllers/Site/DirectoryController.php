@@ -3,27 +3,30 @@
 namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
-use App\Models\Employee;
-use Illuminate\Http\Request;
+use App\Models\Institute;
 
 class DirectoryController extends Controller
 {
-    public function index()
-    {
-        // Fetch employees with linked data
-        $employees = Employee::with(['designation','category','district'])->get()->map(function($e){
-            return [
-                'id'          => $e->emp_id,
-                'name'        => $e->emp_name,
-                'designation' => $e->designation->desig_name ?? 'NA',
-                'category'    => $e->category->name ?? 'NA',
-                'address'     => $e->district->name ?? 'NA',
-                'email'       => $e->emp_email,
-                'mobile'      => $e->emp_mobile,
-            ];
-        });
+    public function index() {
+        $institutes = Institute::with(['head', 'district'])
+            ->where('ins_authority', 'Govt')   // ✅ only Govt institutes
+            ->get()
+            ->map(function($i){
+                return [
+                    'id'          => $i->ins_id,
+                    'name'        => $i->ins_name,
+                    'category'    => $i->ins_nature, // ITI / Polytechnic / Directorate
+                    'address'     => $i->district->name ?? $i->ins_area,
+                    'email'       => $i->ins_email,
+                    'mobile'      => $i->head->emp_mobile ?? 'NA',
+                    'hoi'         => $i->head ? $i->head->emp_name : 'No Head Assigned',
+                    'designation' => $i->head ? $i->head->designation->desig_name : 'No Head Assigned',
+                    'department'  => $i->ins_authority,
+                    'website'     => $i->ins_url ?? '#',  // ✅ prepare here
+                ];
+            });
 
-        // Return Blade view with data
-        return view('modules.site.directory', compact('employees'));
+        return view('modules.site.directory', compact('institutes'));
     }
+
 }
